@@ -1,3 +1,4 @@
-= Doodle JVMTool
+= Doodle JVMTool image:https://github.com/org-doodle/doodle-jvmtool/actions/workflows/ci-maven.yml/badge.svg?style=svg["Actions Status", link="https://github.com/org-doodle/doodle-jvmtool/actions/workflows/ci-maven.yml"]
+:github: https://github.com/org-doodle/doodle-jvmtool/
 
 Doodle 社区驱动贡献的 JVM 工具集合。
