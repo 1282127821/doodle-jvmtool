@@ -8,3 +8,6 @@
 # Apache Maven
 target/
 
+# CMake
+build
+
