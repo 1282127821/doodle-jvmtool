@@ -11,3 +11,6 @@ target/
 # CMake
 build
 
+# VSC
+.vscode
+
