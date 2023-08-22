@@ -19,8 +19,8 @@
 #include <string.h>
 #include <time.h>
 
-static jlong (*real_time_millis)(JNIEnv*, jclass) = NULL;
-static jlong (*real_nano_time_adjustment)(JNIEnv*, jclass, jlong) = NULL;
+static jlong (*real_time_millis)(JNIEnv*, jclass) = nullptr;
+static jlong (*real_nano_time_adjustment)(JNIEnv*, jclass, jlong) = nullptr;
 static jlong offset_millis = 0;
 
 jstring JNICALL get_system_property(JNIEnv* env, const char* name) {
@@ -32,39 +32,46 @@ jstring JNICALL get_system_property(JNIEnv* env, const char* name) {
       env->NewStringUTF(name)));
 }
 
-jlong JNICALL get_offset(JNIEnv* env) {
-  jstring props_string =
-      get_system_property(env, "doodle.jvmtool.faketime.offset.ms");
+jlong JNICALL get_props_time(JNIEnv* env, const char* name, jlong value) {
+  jstring props_string = get_system_property(env, name);
 
-  if (props_string != NULL) {
-    const char* tmp = env->GetStringUTFChars(props_string, NULL);
-    jlong props_long = strtoll(tmp, NULL, 10);
+  if (props_string != nullptr) {
+    const char* tmp = env->GetStringUTFChars(props_string, nullptr);
+    jlong props_long = strtoll(tmp, nullptr, 10);
     env->ReleaseStringUTFChars(props_string, tmp);
     return props_long;
   }
 
-  return offset_millis;
+  return value;
 }
 
 jlong JNICALL fake_time_millis(JNIEnv* env, jclass cls) {
-  return real_time_millis(env, cls) + get_offset(env);
+  jlong abs_ms = get_props_time(env, "doodle.jvmtool.faketime.abs.ms", 0);
+  return abs_ms ? abs_ms
+                : real_time_millis(env, cls) +
+                      get_props_time(env, "doodle.jvmtool.faketime.offset.ms",
+                                     offset_millis);
 }
 
 jlong JNICALL fake_nano_time_adjustment(JNIEnv* env, jclass cls,
                                         jlong offset_seconds) {
-  return real_nano_time_adjustment(env, cls, offset_seconds) +
-         get_offset(env) * 1000000;
+  jlong abs_ms = get_props_time(env, "doodle.jvmtool.faketime.abs.ms", 0);
+  return abs_ms ? abs_ms
+                : real_nano_time_adjustment(env, cls, offset_seconds) +
+                      get_props_time(env, "doodle.jvmtool.faketime.offset.ms",
+                                     offset_millis) *
+                          1000000;
 }
 
 void JNICALL NativeMethodBind(jvmtiEnv* jvmti, JNIEnv* env, jthread thread,
                               jmethodID method, void* address,
                               void** new_address_ptr) {
   char* name;
-  if (jvmti->GetMethodName(method, &name, NULL, NULL) == 0) {
-    if (real_time_millis == NULL && strcmp(name, "currentTimeMillis") == 0) {
+  if (jvmti->GetMethodName(method, &name, nullptr, nullptr) == 0) {
+    if (real_time_millis == nullptr && strcmp(name, "currentTimeMillis") == 0) {
       real_time_millis = (jlong(*)(JNIEnv*, jclass))address;
       *new_address_ptr = (void*)fake_time_millis;
-    } else if (real_nano_time_adjustment == NULL &&
+    } else if (real_nano_time_adjustment == nullptr &&
                strcmp(name, "getNanoTimeAdjustment") == 0) {
       real_nano_time_adjustment = (jlong(*)(JNIEnv*, jclass, jlong))address;
       *new_address_ptr = (void*)fake_nano_time_adjustment;
@@ -75,11 +82,11 @@ void JNICALL NativeMethodBind(jvmtiEnv* jvmti, JNIEnv* env, jthread thread,
 
 JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM* vm, char* options, void* reserved) {
   fprintf(stdout, "加载 doodle-jvmtool-faketime agent");
-  if (options != NULL) {
+  if (options != nullptr) {
     if (options[0] == '+' || options[0] == '-') {
       offset_millis = atoll(options);
     } else {
-      offset_millis = atoll(options) - time(NULL) * 1000LL;
+      offset_millis = atoll(options) - time(nullptr) * 1000LL;
     }
   }
 
@@ -101,7 +108,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM* vm, char* options, void* reserved) {
   jvmti->SetEventCallbacks(&callbacks, sizeof(callbacks));
 
   jvmti->SetEventNotificationMode(JVMTI_ENABLE, JVMTI_EVENT_NATIVE_METHOD_BIND,
-                                  NULL);
+                                  nullptr);
 
   return JNI_OK;
 }
