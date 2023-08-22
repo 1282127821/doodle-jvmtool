@@ -107,5 +107,5 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM* vm, char* options, void* reserved) {
 }
 
 JNIEXPORT void JNICALL Agent_OnUnload(JavaVM* vm) {
-  fprintf(stdout, "加载 doodle-jvmtool-faketime agent");
+  fprintf(stdout, "卸载 doodle-jvmtool-faketime agent");
 }
