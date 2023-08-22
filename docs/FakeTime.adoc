@@ -1,12 +1,12 @@
 = Doodle JVMTool FakeTime
 
-JVM 进程时间偏移修改工具。
+JVM 进程时间修改工具。
 
 == Linux 编译构建
 
 CMake 外部构建方式:
 ``` shell
-  cd doodle-jvmtool && mkdir build && cd build && cmake .. && make
+  cd doodle-jvmtool && mkdir -p build && cd build && cmake .. && make
 ```
 
 == JVM 应用使用
@@ -21,8 +21,11 @@ JVM启动参数设置:
 -XX:CompileCommand=exclude,jdk/internal/misc/VM.getNanoTimeAdjustment
 ```
 
-JVM应用内支持使用系统变量的方式设置时间偏移。
+JVM应用内支持使用系统变量的方式修改时间:
 ```Java
-System.setProperty("doodle.jvmtool.faketime.offset.ms", "100000");
+// 设置偏移时间
+System.setProperty("doodle.jvmtool.faketime.offset.ms", "86400000" /* 一天 */);
+// 设置绝对时间
+System.setProperty("doodle.jvmtool.faketime.abs.ms", "10000");
 
 ```
