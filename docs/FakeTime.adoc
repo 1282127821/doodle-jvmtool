@@ -2,11 +2,16 @@
 
 JVM 进程时间修改工具。
 
-== Linux 编译构建
+== 编译构建
 
-CMake 外部构建方式:
+=== Linux
 ``` shell
-  cd doodle-jvmtool && mkdir -p build && cd build && cmake .. && make
+  cd doodle-jvmtool && cmake -Bbuild . && cd build && make
+```
+
+=== Windows MinGW32/MinGW32-w64
+``` shell
+  cd doodle-jvmtool && cmake -Bbuild -G "MinGW Makefiles" . && cd build && mingw32-make
 ```
 
 == JVM 应用使用
