@@ -6,15 +6,19 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.doodle</groupId>
-    <artifactId>doodle-jvmtool-dependencies</artifactId>
+    <artifactId>doodle-jvmtool-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../doodle-jvmtool-dependencies/pom.xml</relativePath>
+    <relativePath>../doodle-jvmtool-parent/pom.xml</relativePath>
   </parent>
-  <artifactId>doodle-jvmtool-parent</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>doodle-jvmtool-faketime</artifactId>
   <properties>
-    <spotless.license-header.file>
-      ${project.basedir}/../src/checkstyle/license-header.txt
-    </spotless.license-header.file>
+    <spotless-maven-plugin.skip>false</spotless-maven-plugin.skip>
   </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>

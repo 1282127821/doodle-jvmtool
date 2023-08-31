@@ -17,6 +17,7 @@
   </properties>
   <modules>
     <module>doodle-jvmtool-dependencies</module>
+    <module>doodle-jvmtool-faketime</module>
     <module>doodle-jvmtool-parent</module>
   </modules>
 </project>
