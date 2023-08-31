@@ -40,6 +40,11 @@ public abstract class FakeTimeOps {
   protected abstract long getAndSet(long value);
 
   public void reset() {
-    System.clearProperty(property);
+    UPDATER.getAndUpdate(
+        this,
+        value -> {
+          System.clearProperty(property);
+          return 0L;
+        });
   }
 }
